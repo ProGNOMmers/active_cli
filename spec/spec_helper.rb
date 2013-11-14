@@ -5,6 +5,9 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  # Disable should syntax
+  config.expect_with(:rspec) { |c| c.syntax = :expect }
+
   # Limit the spec run to only specs with the focus metadata. If no specs have
   # the filtering metadata and `run_all_when_everything_filtered = true` then
   # all specs will run.
