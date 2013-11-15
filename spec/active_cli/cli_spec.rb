@@ -21,10 +21,8 @@ module ActiveCLI
       end
 
       context 'with a non-array argument' do
-        it 'raises an ArgumentError' do
-          arguments = [ nil, false, true, 1, Object.new, '', {} ]
-
-          arguments.each do |argument|
+        it 'raises an ArgumentError', arguments_list: [ nil, false, true, 1, Object.new, '', {} ] do |example|
+          example.metadata[:arguments_list].each do |argument|
             expect { described_class.new *[ argument ] }.to raise_error ArgumentError
           end
         end
