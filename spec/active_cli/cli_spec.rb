@@ -2,15 +2,17 @@ require 'spec_helper'
 
 module ActiveCLI
   describe CLI do
-    describe '.new' do
 
+    let(:subclass) { Class.new described_class }
+
+    describe '#initialize' do
       def arguments(example)
         example.metadata[:arguments]
       end
 
       context 'with no arguments', arguments: [ ] do
         it 'works' do |example|
-          expect { described_class.new *arguments(example) }.to_not raise_error
+          expect { described_class.new *arguments(example) }.not_to raise_error
         end
         it 'sets .arguments to ARGV' do |example|
           expect( described_class.new( *arguments(example) ).arguments ).to be ARGV
@@ -19,7 +21,7 @@ module ActiveCLI
 
       context 'with an array argument', arguments: [ [] ] do
         it 'works' do |example|
-          expect { described_class.new *arguments(example) }.to_not raise_error
+          expect { described_class.new *arguments(example) }.not_to raise_error
         end
       end
 
@@ -39,7 +41,47 @@ module ActiveCLI
         expect( instance.instance_variable_get :@arguments ).to be arguments
         expect( instance.arguments                         ).to be arguments
       end
-
     end
+
+    describe '.options' do
+      it 'is initialized with an empty hash' do
+        expect( subclass.options ).to eq( {} )
+      end
+    end
+
+    describe '.option' do
+
+      let!(:option_name) { :help }
+
+      context 'when .options does not include an option with the same name' do
+        it 'stores a new ActiveCLI::Option instance to .options' do
+          expect { subclass.option option_name }.to change { subclass.options.size }.from(0).to(1)
+        end
+
+        it 'makes the option accessible via .options[option_name]' do
+          subclass.option option_name
+          expect( subclass.options[option_name] ).to eq ActiveCLI::Option.new option_name
+        end
+      end
+
+      context 'when .options includes an option with the same name' do
+        it 'replaces the old option with the new one' do
+          old_option = subclass.option(option_name)
+          new_option = subclass.option(option_name)
+
+          option = subclass.options[option_name]
+
+          expect( option ).not_to be old_option
+          expect( option ).to be new_option
+        end
+      end
+
+      it 'protects the parent class from getting .options dirty by the subclass' do
+        subclass.option option_name
+
+        expect( subclass.options ).not_to eq described_class.options
+      end
+    end
+
   end
 end
