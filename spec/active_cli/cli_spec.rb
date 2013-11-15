@@ -34,8 +34,10 @@ module ActiveCLI
 
         context 'giving a block with one argument', arguments: [ ] do
           it 'yields self' do |example|
-            # TODO it doesn't check for `self` identity; I don't know how to implement it
-            expect { |b| described_class.new *arguments(example), &b }.to yield_with_args described_class
+            yielded_instance = nil
+            instance         = described_class.new( *arguments(example) ) { |i| yielded_instance = i }
+            
+            expect( yielded_instance ).to be instance
           end
         end
 
