@@ -47,10 +47,41 @@ module ActiveCLI
       it 'is initialized with an empty hash' do
         expect( subclass.options ).to eq( {} )
       end
+
+      it 'accepts an hash argument' do
+        expect{ subclass.options( { } ) }.not_to raise_error
+      end
+
+      context 'with a raw options hash as argument' do
+        it 'sets .options to an Option instances hash obtained from the argument', argument: { help: ['help'], version: ['version'] } do |example|
+          subclass.options( example.metadata[:argument] )
+          expect( subclass.options ).to eq( { help: Option.new('help'), version: Option.new('version') } )
+        end
+
+        context 'with the hash values empty' do
+          it 'sets .options to an Option instances hash obtained from the argument', argument: { help: nil, version: nil } do |example|
+            subclass.options( example.metadata[:argument] )
+            expect( subclass.options ).to eq( { help: Option.new(:help), version: Option.new(:version) } )
+          end
+        end
+      end
+
+      context 'with a raw options array pairs as argument' do
+        it 'sets .options to an Option instances hash obtained from the argument', argument: [ [:help, ['help'] ], [:version, ['version'] ] ] do |example|
+          subclass.options( example.metadata[:argument] )
+          expect( subclass.options ).to eq( { help: Option.new('help'), version: Option.new('version') } )
+        end
+
+        context 'with the second array value empty' do
+          it 'sets .options to an Option instances hash obtained from the argument', argument: [:help, :version] do |example|
+            subclass.options( example.metadata[:argument] )
+            expect( subclass.options ).to eq( { help: Option.new(:help), version: Option.new(:version) } )
+          end
+        end
+      end
     end
 
     describe '.option' do
-
       let!(:option_name) { :help }
 
       context 'when .options does not include an option with the same name' do
