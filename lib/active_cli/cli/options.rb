@@ -2,9 +2,14 @@ require 'active_cli'
 
 module ActiveCLI
   class CLI
-    def self.converted_options
-      {}
-    end
+
+    CONVERTED_OPTIONS_METHOD_NAME = :converted_options
+
+    class_eval <<-"RUBY"
+      def self.#{CONVERTED_OPTIONS_METHOD_NAME}
+        {}
+      end
+    RUBY
 
     def self.options(options = nil)
       return converted_options unless options
@@ -13,12 +18,10 @@ module ActiveCLI
     end
 
     def self.options=(options)
-      method_name = :converted_options
-
       singleton_class.class_eval do
-        remove_possible_method method_name
+        remove_possible_method CONVERTED_OPTIONS_METHOD_NAME
         options = convert_options options
-        define_method(method_name) { options }
+        define_method(CONVERTED_OPTIONS_METHOD_NAME) { options }
       end
 
       options
