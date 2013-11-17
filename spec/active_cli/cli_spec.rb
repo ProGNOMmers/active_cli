@@ -49,7 +49,7 @@ module ActiveCLI
       end
 
       it 'accepts an hash argument' do
-        expect{ subclass.options( { } ) }.not_to raise_error
+        expect{ subclass.options( {} ) }.not_to raise_error
       end
 
       context 'with a raw options hash as argument' do
@@ -91,7 +91,7 @@ module ActiveCLI
 
         it 'makes the option accessible via .options[option_name]' do
           subclass.option option_name
-          expect( subclass.options[option_name] ).to eq ActiveCLI::Option.new option_name
+          expect( subclass.options[option_name] ).to eq Option.new option_name
         end
       end
 
