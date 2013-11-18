@@ -5,6 +5,7 @@
   - format `asd=qwe` support
   - defaults values support
   - validations support
+  - stdin support
   - Check http://www.awesomecommandlineapps.com/gems.html in order to get ideas'
 - Option parser: `ActiveCLI::OptionParser` or `ActiveCLI::Option::Parser`
 - `ActiveCLI::API`
