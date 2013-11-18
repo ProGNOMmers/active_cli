@@ -31,8 +31,9 @@ module ActiveCLI
           end
         end
         context ':any, :*' do
-          it 'sets a matcher for each occurrence whose matching component is the stringified key and the properties are the default properties merged with the value' do
-            expect( described_class.new( :help, 'usage' ).matchers ).to eq( 'usage' => described_class.default_matcher_properties )
+          it 'sets a catch-all matcher' do
+            expect( described_class.new( :help, :any ).matchers ).to eq( any: true )
+            expect( described_class.new( :help, :*   ).matchers ).to eq( any: true )
           end
         end
       end

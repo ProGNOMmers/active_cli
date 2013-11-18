@@ -36,7 +36,7 @@ module ActiveCLI
       when String   then { @matchers => self.class.default_matcher_properties }
       when Array    then Hash[ @matchers.map { |v| [ v.to_s, self.class.default_matcher_properties ] } ]
       when Hash     then Hash[ @matchers.map { |k, v| [ k.to_s, self.class.default_matcher_properties.merge(v) ] } ]
-      when :any, :* then { @matchers => nil }
+      when :any, :* then { any: true }
       end
     end
 
