@@ -7,7 +7,7 @@ module ActiveCLI
 
     class_eval <<-"RUBY"
       def self.#{CONVERTED_OPTIONS_METHOD_NAME}
-        {}
+        HashWithIndifferentAccess.new
       end
     RUBY
 
@@ -29,7 +29,7 @@ module ActiveCLI
 
     singleton_class.class_eval do
       def self.convert_options(options)
-        Hash[ options.map { |k, v| [ k, convert_option(k, v) ] } ]
+        HashWithIndifferentAccess[ options.map { |k, v| [ k, convert_option(k, v) ] } ]
       end
 
       def self.convert_option(key, object)

@@ -52,16 +52,23 @@ module ActiveCLI
         expect{ subclass.options( {} ) }.not_to raise_error
       end
 
+      it 'returns an hash with indifferent access', argument: { help: ['help'], 'help' => ['help'] } do |example|
+        subclass.options( example.metadata[:argument] )
+
+        expect( subclass.options.size ).to be 1
+        expect( subclass.options[:help] ).to be subclass.options['help']
+      end
+
       context 'with a raw options hash as argument' do
         it 'sets .options to an Option instances hash obtained from the argument', argument: { help: ['help'], version: ['version'] } do |example|
           subclass.options( example.metadata[:argument] )
-          expect( subclass.options ).to eq( { help: Option.new('help'), version: Option.new('version') } )
+          expect( subclass.options ).to eq( { 'help' => Option.new('help'), 'version' => Option.new('version') } )
         end
 
         context 'with the hash values empty' do
           it 'sets .options to an Option instances hash obtained from the argument', argument: { help: nil, version: nil } do |example|
             subclass.options( example.metadata[:argument] )
-            expect( subclass.options ).to eq( { help: Option.new(:help), version: Option.new(:version) } )
+            expect( subclass.options ).to eq( { 'help' => Option.new(:help), 'version' => Option.new(:version) } )
           end
         end
       end
@@ -69,13 +76,13 @@ module ActiveCLI
       context 'with a raw options array pairs as argument' do
         it 'sets .options to an Option instances hash obtained from the argument', argument: [ [:help, ['help'] ], [:version, ['version'] ] ] do |example|
           subclass.options( example.metadata[:argument] )
-          expect( subclass.options ).to eq( { help: Option.new('help'), version: Option.new('version') } )
+          expect( subclass.options ).to eq( { 'help' => Option.new('help'), 'version' => Option.new('version') } )
         end
 
         context 'with the second array value empty' do
           it 'sets .options to an Option instances hash obtained from the argument', argument: [:help, :version] do |example|
             subclass.options( example.metadata[:argument] )
-            expect( subclass.options ).to eq( { help: Option.new(:help), version: Option.new(:version) } )
+            expect( subclass.options ).to eq( { 'help' => Option.new(:help), 'version' => Option.new(:version) } )
           end
         end
       end
